@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/authorsFragment">
+    <fragment
+        android:id="@+id/authorsFragment"
+        android:name="com.example.fbkt2.ui.AuthorsFragment"
+        android:label="fragment_authors"
+        tools:layout="@layout/fragment_authors" >
+        <action
+            android:id="@+id/action_authorsFragment_to_addAuthorDialogFragment"
+            app:destination="@id/addAuthorDialogFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/addAuthorDialogFragment"
+        android:name="com.example.fbkt2.ui.AddAuthorDialogFragment"
+        android:label="fragment_add_author_dialog"
+        tools:layout="@layout/fragment_add_author_dialog" />
+</navigation>
