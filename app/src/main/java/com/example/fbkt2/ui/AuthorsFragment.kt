@@ -2,23 +2,22 @@ package com.example.fbkt2.ui
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-
+import com.example.fbkt.ui.EditAuthorDialogFragment
 import com.example.fbkt2.R
-import com.google.firebase.database.FirebaseDatabase
+import com.example.fbkt2.data.Author
 import kotlinx.android.synthetic.main.fragment_authors.*
 
 /**
  * A simple [Fragment] subclass.
  */
-class AuthorsFragment : Fragment() {
+class AuthorsFragment : Fragment(), RecyclerViewClickListener {
 
     lateinit var viewModel: AuthorsViewModel
     private val adapter = AuthorsAdapter()
@@ -30,26 +29,46 @@ class AuthorsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        viewModel = ViewModelProviders.of(this)[AuthorsViewModel::class.java]
         return inflater.inflate(R.layout.fragment_authors, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
-        viewModel = ViewModelProviders.of(this)[AuthorsViewModel::class.java]
-
+        adapter.listener = this
         recycler_view_authors.adapter = adapter
 
-//        viewModel.fetchAuthors()
-//
-//        viewModel.authors.observe(viewLifecycleOwner, Observer {
-//            adapter.setAuthors(it)
-//        })
+        viewModel.fetchAuthors()
+        viewModel.getRealtimeUpdates()
+
+        viewModel.authors.observe(viewLifecycleOwner, Observer {
+            adapter.setAuthors(it)
+        })
+
+        viewModel.author.observe(viewLifecycleOwner, Observer {
+            adapter.addAuthor(it)
+        })
 
         button_add.setOnClickListener {
             AddAuthorDialogFragment()
                 .show(childFragmentManager, "")
+        }
+    }
+
+    override fun onRecyclerViewItemClicked(view: View, author: Author) {
+        when (view.id) {
+            R.id.button_edit -> {
+                EditAuthorDialogFragment(author).show(childFragmentManager, "")
+            }
+            R.id.button_delete -> {
+                AlertDialog.Builder(requireContext()).also {
+                    it.setTitle(getString(R.string.delete_confirmation))
+                    it.setPositiveButton(getString(R.string.yes)) { dialog, which ->
+                        viewModel.deleteAuthor(author)
+                    }
+                }.create().show()
+            }
         }
     }
 }

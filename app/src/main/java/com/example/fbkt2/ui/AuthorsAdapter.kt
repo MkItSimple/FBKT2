@@ -1,6 +1,5 @@
 package com.example.fbkt2.ui
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,9 +20,10 @@ class AuthorsAdapter : RecyclerView.Adapter<AuthorsAdapter.AuthorViewModel>() {
 
     override fun getItemCount() = authors.size
 
-    @SuppressLint("SetTextI18n")
+//    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: AuthorViewModel, position: Int) {
         holder.view.text_view_name.text = authors[position].name
+
         holder.view.button_edit.setOnClickListener {
             listener?.onRecyclerViewItemClicked(it, authors[position])
         }
@@ -32,8 +32,22 @@ class AuthorsAdapter : RecyclerView.Adapter<AuthorsAdapter.AuthorViewModel>() {
         }
     }
 
-    fun setAuthors(authors: List<Author>) {
+    fun setAuthors(authors: List<Author>){
         this.authors = authors as MutableList<Author>
+        notifyDataSetChanged()
+    }
+
+    fun addAuthor(author: Author) {
+        if (!authors.contains(author)) {
+            authors.add(author)
+        } else {
+            val index = authors.indexOf(author)
+            if (author.isDeleted) {
+                authors.removeAt(index)
+            } else {
+                authors[index] = author
+            }
+        }
         notifyDataSetChanged()
     }
 
