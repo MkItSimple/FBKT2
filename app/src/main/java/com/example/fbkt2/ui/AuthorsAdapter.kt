@@ -1,5 +1,6 @@
 package com.example.fbkt2.ui
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +24,8 @@ class AuthorsAdapter : RecyclerView.Adapter<AuthorsAdapter.AuthorViewModel>() {
 //    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: AuthorViewModel, position: Int) {
         holder.view.text_view_name.text = authors[position].name
-
+        holder.view.text_view_city_votes.text =
+            "${authors[position].city} | Votes : ${authors[position].votes}"
         holder.view.button_edit.setOnClickListener {
             listener?.onRecyclerViewItemClicked(it, authors[position])
         }
